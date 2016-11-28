@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="SchoolApp4Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Category">
+    <Key>
+      <PropertyRef Name="CategoryID" />
+    </Key>
+    <Property Name="CategoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CategoryName" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Courses" Relationship="Self.FK_Course_Category" FromRole="Category" ToRole="Course" />
+  </EntityType>
+  <EntityType Name="Course">
+    <Key>
+      <PropertyRef Name="CourseID" />
+    </Key>
+    <Property Name="CourseID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CourseName" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="CourseDescription" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="CourseCategory" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Category" Relationship="Self.FK_Course_Category" FromRole="Course" ToRole="Category" />
+    <NavigationProperty Name="EnrollmentRecords" Relationship="Self.FK_EnrollmentRecord_Course" FromRole="Course" ToRole="EnrollmentRecord" />
+  </EntityType>
+  <EntityType Name="EnrollmentRecord">
+    <Key>
+      <PropertyRef Name="EnrollmentID" />
+    </Key>
+    <Property Name="EnrollmentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EnrollmentStudent" Type="Int32" Nullable="false" />
+    <Property Name="EnrollmentCourse" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Course" Relationship="Self.FK_EnrollmentRecord_Course" FromRole="EnrollmentRecord" ToRole="Course" />
+    <NavigationProperty Name="Student" Relationship="Self.FK_EnrollmentRecord_Student" FromRole="EnrollmentRecord" ToRole="Student" />
+  </EntityType>
+  <EntityType Name="Student">
+    <Key>
+      <PropertyRef Name="StudentID" />
+    </Key>
+    <Property Name="StudentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="StudentName" Type="String" MaxLength="35" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="EnrollmentRecords" Relationship="Self.FK_EnrollmentRecord_Student" FromRole="Student" ToRole="EnrollmentRecord" />
+  </EntityType>
+  <Association Name="FK_Course_Category">
+    <End Role="Category" Type="Self.Category" Multiplicity="1" />
+    <End Role="Course" Type="Self.Course" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Category">
+        <PropertyRef Name="CategoryID" />
+      </Principal>
+      <Dependent Role="Course">
+        <PropertyRef Name="CourseCategory" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_EnrollmentRecord_Course">
+    <End Role="Course" Type="Self.Course" Multiplicity="1" />
+    <End Role="EnrollmentRecord" Type="Self.EnrollmentRecord" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Course">
+        <PropertyRef Name="CourseID" />
+      </Principal>
+      <Dependent Role="EnrollmentRecord">
+        <PropertyRef Name="EnrollmentCourse" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_EnrollmentRecord_Student">
+    <End Role="Student" Type="Self.Student" Multiplicity="1" />
+    <End Role="EnrollmentRecord" Type="Self.EnrollmentRecord" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Student">
+        <PropertyRef Name="StudentID" />
+      </Principal>
+      <Dependent Role="EnrollmentRecord">
+        <PropertyRef Name="EnrollmentStudent" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="SchoolApp4Entities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Categories" EntityType="Self.Category" />
+    <EntitySet Name="Courses" EntityType="Self.Course" />
+    <EntitySet Name="EnrollmentRecords" EntityType="Self.EnrollmentRecord" />
+    <EntitySet Name="Students" EntityType="Self.Student" />
+    <AssociationSet Name="FK_Course_Category" Association="Self.FK_Course_Category">
+      <End Role="Category" EntitySet="Categories" />
+      <End Role="Course" EntitySet="Courses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_EnrollmentRecord_Course" Association="Self.FK_EnrollmentRecord_Course">
+      <End Role="Course" EntitySet="Courses" />
+      <End Role="EnrollmentRecord" EntitySet="EnrollmentRecords" />
+    </AssociationSet>
+    <AssociationSet Name="FK_EnrollmentRecord_Student" Association="Self.FK_EnrollmentRecord_Student">
+      <End Role="Student" EntitySet="Students" />
+      <End Role="EnrollmentRecord" EntitySet="EnrollmentRecords" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
